@@ -1,6 +1,6 @@
 ﻿using System.Net.Http.Headers;
 
-namespace TriviaQuizGame
+namespace CompsciTrivia
 {
     public static class ApiHelper
     {
