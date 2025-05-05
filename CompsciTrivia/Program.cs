@@ -4,14 +4,12 @@
     {
         static async Task Main(string[] args)
         {
-            ApiHelper.InitialiseClient();
-            QuizProcessor processor = new QuizProcessor();
-            var questions = await processor.LoadQuiz("medium");
+            Player player1 = new Player("Goomba");
+            Trivia csTrivia = new Trivia(player1);
+            await csTrivia.SetUpQuestions();
 
-            foreach (var q in questions)
-            {
-                Console.WriteLine(q.Question);
-            }
+            Console.WriteLine(csTrivia.Difficulty);
+
 
 
         }
