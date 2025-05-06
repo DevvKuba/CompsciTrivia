@@ -8,7 +8,7 @@
             Trivia csTrivia = new Trivia(player1);
             await csTrivia.SetUpQuestions();
 
-            Console.WriteLine(csTrivia.Difficulty);
+            await csTrivia.StartQuiz();
 
 
 

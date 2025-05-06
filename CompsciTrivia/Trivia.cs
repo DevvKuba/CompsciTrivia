@@ -2,16 +2,58 @@
 {
     public class Trivia
     {
-        public List<QuizModel> Questions { get; set; } = new List<QuizModel>();
+        public List<QuizModel> QuestionsData { get; set; } = new List<QuizModel>();
 
         public DateTime TimeConstraint { get; set; }
         public string Difficulty { get; set; }
+
+        // for updating score etc
+        public Player Player { get; set; }
+
         public Trivia(Player triviaPlayer)
         {
+            Player = triviaPlayer;
             DateTime date = new DateTime();
             Difficulty = triviaPlayer.QuestionDifficulty;
             TimeConstraint = date.AddSeconds(triviaPlayer.TimingDifficulty);
         }
+
+
+        //int questionindex
+        public async Task StartQuiz()
+        {
+            int questionNum = 1;
+            Random random = new Random();
+            foreach (var q in QuestionsData)
+            {
+                q.Incorrect_Answers.Add(q.Correct_Answer);
+                var questionAnswers = q.Incorrect_Answers.OrderBy(x => random.Next()).ToList();
+
+                Console.WriteLine($"\nQuestion {questionNum}: {q.Question}\n" +
+                    $"Possible answers:\n");
+
+                int answerNum = 0;
+                foreach (var answer in questionAnswers)
+                {
+                    answerNum++;
+                    Console.WriteLine($"{answerNum}. {answer}");
+                }
+
+                Console.WriteLine("Correct Answer: ");
+                string userInput = Console.ReadLine().ToLower();
+                if (int.TryParse(userInput, out int choice))
+                {
+                    // find correct answer index
+                    if (questionAnswers[choice - 1] == q.Correct_Answer)
+                    {
+                        Player.Score++;
+                    }
+                }
+                questionNum++;
+            }
+            Console.WriteLine($"Score: {Player.Score}/10");
+        }
+
 
         public async Task SetUpQuestions()
         {
@@ -21,10 +63,24 @@
 
             foreach (var q in questions)
             {
-                Questions.Add(q);
+                QuestionsData.Add(q);
+
             }
-            // to test
-            Console.WriteLine(Questions[0].Question);
+        }
+
+
+        public void PrintAllQuestions()
+        {
+            int questionNum = 1;
+            foreach (var q in QuestionsData)
+            {
+                foreach (var item in q.Incorrect_Answers)
+                {
+
+                    Console.WriteLine($"Q{questionNum}: {item}");
+                }
+                questionNum++;
+            }
         }
 
 
