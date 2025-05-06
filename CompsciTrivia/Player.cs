@@ -50,15 +50,15 @@
         {
             if (difficulty == "easy")
             {
-                return 180;
+                return 120;
             }
             else if (difficulty == "medium")
             {
-                return 150;
+                return 90;
             }
             else if (difficulty == "hard")
             {
-                return 90;
+                return 45;
             }
             return 0;
         }

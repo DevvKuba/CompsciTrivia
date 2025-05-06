@@ -4,7 +4,7 @@
     {
         public List<QuizModel> QuestionsData { get; set; } = new List<QuizModel>();
 
-        public DateTime TimeConstraint { get; set; }
+        public double TimeConstraint { get; set; }
         public string Difficulty { get; set; }
 
         // for updating score etc
@@ -13,14 +13,28 @@
         public Trivia(Player triviaPlayer)
         {
             Player = triviaPlayer;
-            DateTime date = new DateTime();
             Difficulty = triviaPlayer.QuestionDifficulty;
-            TimeConstraint = date.AddSeconds(triviaPlayer.TimingDifficulty);
+            TimeConstraint = triviaPlayer.TimingDifficulty;
         }
 
+        public async Task StartQuiz()
+        {
+
+            var cts = new CancellationTokenSource(TimeSpan.FromSeconds(TimeConstraint));
+            try
+            {
+                await StartQuestions(cts.Token);
+
+            }
+            catch (OperationCanceledException)
+            {
+                Console.WriteLine($"Times up!\n Your final score {Player.Score}/10");
+            }
+
+        }
 
         //int questionindex
-        public async Task StartQuiz()
+        public async Task StartQuestions(CancellationToken token)
         {
             int questionNum = 1;
             Random random = new Random();
@@ -49,6 +63,7 @@
                         Player.Score++;
                     }
                 }
+                token.ThrowIfCancellationRequested();
                 questionNum++;
             }
             Console.WriteLine($"Score: {Player.Score}/10");
